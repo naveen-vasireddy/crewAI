@@ -5,7 +5,7 @@ import warnings
 from datetime import datetime
 
 from crewai_one.crew import CrewaiOne
-
+from crewai_one.crew_2nd import crew_sequential, crew_hierarchical
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
 
 # This main file is intended to be a way for you to run your
@@ -23,7 +23,9 @@ def run():
     }
 
     try:
-        CrewaiOne().crew().kickoff(inputs=inputs)
+        # CrewaiOne().crew().kickoff(inputs=inputs)
+        # crew_sequential.kickoff()
+        crew_hierarchical.kickoff()
     except Exception as e:
         raise Exception(f"An error occurred while running the crew: {e}")
 
