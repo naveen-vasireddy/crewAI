@@ -1,16 +1,13 @@
 from crewai import Agent, Task, Crew, Process
-from crewai_tools import SerperDevTool
-from crewai_one.crew import llm
-# Tools
-search_tool = SerperDevTool()
+from crewai_one.crew import llm  # Match the name the LLM is trying to use
 
 # Agents
 researcher = Agent(
     role='Researcher',
     goal='Find and summarize the latest AI news',
     backstory='Experienced data analyst with a knack for uncovering trends.',
-    tools=[search_tool],
-    verbose=True
+    verbose=True,
+    llm=llm
 )
 
 writer = Agent(
@@ -22,29 +19,28 @@ writer = Agent(
 
 # Tasks
 research_task = Task(
-    description='Find and summarize the latest AI news',
+    description='First: Find and summarie the latest AI news',
     expected_output='A bullet list summary of the top 5 AI news',
     agent=researcher,
-    tools=[search_tool]
 )
 
 write_task = Task(
-    description='Write an engaging article based on the research',
+    description='Later: Write an engaging article based on the research',
     expected_output='A well-structured article about AI trends',
     agent=writer
 )
 
 # Try SEQUENTIAL
 crew_sequential = Crew(
-    agents=[researcher, writer],
-    tasks=[research_task, write_task],
+    agents=[ writer, researcher],
+    tasks=[ write_task, research_task],
     process=Process.sequential
 )
 
 # Try HIERARCHICAL (requires manager_llm)
 crew_hierarchical = Crew(
-    agents=[researcher, writer],
-    tasks=[research_task, write_task],
+    agents=[ writer , researcher],
+    tasks=[ write_task , research_task],
     process=Process.hierarchical,
     manager_llm=llm
 )
